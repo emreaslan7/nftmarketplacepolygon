@@ -1,126 +1,193 @@
-const {
-  time,
-  loadFixture,
-} = require("@nomicfoundation/hardhat-toolbox/network-helpers");
-const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
 const { expect } = require("chai");
+const { ethers, network } = require("hardhat");
 
-describe("Lock", function () {
-  // We define a fixture to reuse the same setup in every test.
-  // We use loadFixture to run this setup once, snapshot that state,
-  // and reset Hardhat Network to that snapshot in every test.
-  async function deployOneYearLockFixture() {
-    const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-    const ONE_GWEI = 1_000_000_000;
+describe("NFTMarket", function () {
 
-    const lockedAmount = ONE_GWEI;
-    const unlockTime = (await time.latest()) + ONE_YEAR_IN_SECS;
+  let market, nftcontract, marketAddress, nftcontractAddress, listingPrice, auctionPrice;
+  let creatorToken;
+  let creatorToken2;
+  let creatorToken3;
+  let creatorToken4;
 
-    // Contracts are deployed using the first signer/account by default
-    const [owner, otherAccount] = await ethers.getSigners();
+  before(async ()=> {
+    // deploy stuff
 
-    const Lock = await ethers.getContractFactory("Lock");
-    const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
+    [owner, creatorToken, creatorToken2, creatorToken3, creatorToken4] = await ethers.getSigners();
 
-    return { lock, unlockTime, lockedAmount, owner, otherAccount };
+    const Market = await ethers.getContractFactory("NFTMarketplace");
+    market = await Market.deploy();
+    await market.deployed();
+    
+    marketAddress = market.address;
+
+
+    const NftContract = await ethers.getContractFactory("NFT");
+    nftcontract = await NftContract.deploy(marketAddress);
+    await nftcontract.deployed();
+    
+    nftcontractAddress = nftcontract.address;
+
+    let ListingPrice = await market.getListingPrice();
+    listingPrice = ListingPrice.toString();
+
+    auctionPrice = ethers.utils.parseUnits("1", 'ether');
+    
+  })
+
+  async function advanceTime(seconds) {
+    await network.provider.send("evm_increaseTime", [seconds]);
+    await network.provider.send("evm_mine");
   }
 
-  describe("Deployment", function () {
-    it("Should set the right unlockTime", async function () {
-      const { lock, unlockTime } = await loadFixture(deployOneYearLockFixture);
+  it("should deploy contract and execute market sales", async function () {
 
-      expect(await lock.unlockTime()).to.equal(unlockTime);
-    });
+    await nftcontract.connect(creatorToken).createToken("https://www.mytokenlocation.com");
 
-    it("Should set the right owner", async function () {
-      const { lock, owner } = await loadFixture(deployOneYearLockFixture);
+    await market.connect(creatorToken).createMarketItem(nftcontractAddress, 1, auctionPrice,0, {value : listingPrice});
 
-      expect(await lock.owner()).to.equal(owner.address);
-    });
+    await market.connect(creatorToken2).createMarketSale(nftcontractAddress, 1, {value: auctionPrice});
 
-    it("Should receive and store the funds to lock", async function () {
-      const { lock, lockedAmount } = await loadFixture(
-        deployOneYearLockFixture
-      );
+    let items = await market.fetchMarketItems();
 
-      expect(await ethers.provider.getBalance(lock.target)).to.equal(
-        lockedAmount
-      );
-    });
+    items = await Promise.all(items.map(async i => {
+      const tokenUri = await nftcontract.tokenURI(i.tokenId);
+      let item = {
+        price : i.price.toString(),
+        tokenId : i.tokenId.toString(),
+        seller: i.seller,
+        owner : i.owner,
+        tokenUri
+      }
+      return item;
+    }));
 
-    it("Should fail if the unlockTime is not in the future", async function () {
-      // We don't use the fixture here because we want a different deployment
-      const latestTime = await time.latest();
-      const Lock = await ethers.getContractFactory("Lock");
-      await expect(Lock.deploy(latestTime, { value: 1 })).to.be.revertedWith(
-        "Unlock time should be in the future"
-      );
-    });
+    console.log("items: ", items);
+
   });
 
-  describe("Withdrawals", function () {
-    describe("Validations", function () {
-      it("Should revert with the right error if called too soon", async function () {
-        const { lock } = await loadFixture(deployOneYearLockFixture);
 
-        await expect(lock.withdraw()).to.be.revertedWith(
-          "You can't withdraw yet"
-        );
-      });
+  it("cancel execution of a nft sale", async() => {
 
-      it("Should revert with the right error if called from another account", async function () {
-        const { lock, unlockTime, otherAccount } = await loadFixture(
-          deployOneYearLockFixture
-        );
+    await nftcontract.connect(creatorToken3).createToken("https://www.mytokenlocation2.com");
 
-        // We can increase the time in Hardhat Network
-        await time.increaseTo(unlockTime);
+    await market.connect(creatorToken3).createMarketItem(nftcontractAddress, 2, auctionPrice,0, {value : listingPrice});
 
-        // We use lock.connect() to send a transaction from another account
-        await expect(lock.connect(otherAccount).withdraw()).to.be.revertedWith(
-          "You aren't the owner"
-        );
-      });
+    await market.connect(creatorToken3).deleteMarketSale(nftcontractAddress, 2);
+    console.log("sale canceled, now again createMarketSale");
 
-      it("Shouldn't fail if the unlockTime has arrived and the owner calls it", async function () {
-        const { lock, unlockTime } = await loadFixture(
-          deployOneYearLockFixture
-        );
+    await market.connect(creatorToken3).createMarketItem(nftcontractAddress, 2, auctionPrice,2, {value : listingPrice});
 
-        // Transactions are sent using the first signer by default
-        await time.increaseTo(unlockTime);
+  })
 
-        await expect(lock.withdraw()).not.to.be.reverted;
-      });
-    });
+  it("start nft auction and cancel it",async() =>{
 
-    describe("Events", function () {
-      it("Should emit an event on withdrawals", async function () {
-        const { lock, unlockTime, lockedAmount } = await loadFixture(
-          deployOneYearLockFixture
-        );
+    console.log( "creator token4", creatorToken4.address);
+    await nftcontract.connect(creatorToken4).createToken("https://www.mytokenlocation3.com");
+    
+    await market.connect(creatorToken4).startNFTAuction(nftcontractAddress, 3, auctionPrice,100000, {value: listingPrice});
+    expect(await nftcontract.ownerOf(3)).to.equal(marketAddress);
+    console.log("Success!! ");
 
-        await time.increaseTo(unlockTime);
+    await market.connect(creatorToken4).deleteNFTAuction(1,nftcontractAddress);
+    expect(await nftcontract.ownerOf(3)).to.equal(creatorToken4.address);
 
-        await expect(lock.withdraw())
-          .to.emit(lock, "Withdrawal")
-          .withArgs(lockedAmount, anyValue); // We accept any value as `when` arg
-      });
-    });
 
-    describe("Transfers", function () {
-      it("Should transfer the funds to the owner", async function () {
-        const { lock, unlockTime, lockedAmount, owner } = await loadFixture(
-          deployOneYearLockFixture
-        );
+  })
 
-        await time.increaseTo(unlockTime);
+  it("should start an NFT auction", async function () {
+    const tokenId = 1;
+    const deadline = Math.floor(Date.now() / 1000) + 3600; // 1 hour from now
+    await nftcontract.connect(creatorToken).createToken("https://www.mytokenlocation.com");
+    
+    await market
+      .connect(creatorToken)
+      .startNFTAuction(nftcontractAddress, tokenId, auctionPrice, deadline, { value: listingPrice });
 
-        await expect(lock.withdraw()).to.changeEtherBalances(
-          [owner, lock],
-          [lockedAmount, -lockedAmount]
-        );
-      });
-    });
+    let items = await market.fetchForAuction();
+    items = await Promise.all(items.map(async i => {
+      const tokenUri = await nftcontract.tokenURI(i.tokenId);
+      let item = {
+        tokenId : i.tokenId.toString(),
+        seller: i.seller,
+        owner : i.owner,
+        startingPrice: i.startingPrice.toString(),
+        highestBid: i.highestBid.toString(),
+        deadline: i.deadline.toString(),
+        isForAuction: i.isForAuction,
+        tokenUri
+      }
+      return item;
+    }));
+
+    expect(items[0].seller).to.equal(creatorToken.address);
+    expect(items[0].isForAuction).to.be.true;
+
+  });
+
+
+
+  it("should place a bid on an NFT auction", async function () {
+    const tokenId = 1;
+    const deadline = Math.floor(Date.now() / 1000) + 3600; // 1 hour from now
+
+    await nftcontract.connect(creatorToken2).createToken("https://www.mytokenlocation.com");
+    console.log("creator token2:",creatorToken2.address);
+    await market
+      .connect(creatorToken2)
+      .startNFTAuction(nftcontractAddress, tokenId, auctionPrice, deadline, { value: listingPrice });
+
+    const itemId = 1;
+    const bidAmount = ethers.utils.parseUnits("2", "ether");
+
+    await market.connect(creatorToken3).bid(itemId, { value: bidAmount });
+
+    
+
+    let items = await market.fetchForAuction();
+    items = await Promise.all(items.map(async i => {
+      const tokenUri = await nftcontract.tokenURI(i.tokenId);
+      let item = {
+        tokenId : i.tokenId.toString(),
+        seller: i.seller,
+        owner : i.owner,
+        startingPrice: i.startingPrice.toString(),
+        highestBid: i.highestBid.toString(),
+        deadline: i.deadline.toString(),
+        isForAuction: i.isForAuction,
+        tokenUri
+      }
+      return item;
+    }));
+
+    expect(items[0].highestBid.toString()).to.equal(bidAmount);
+    expect(items[0].owner).to.equal(creatorToken3.address);
+
+  });
+
+
+
+  it("should finish an NFT auction", async function () {
+    const itemId = 1;
+
+    await advanceTime(7200);
+    await market.connect(creatorToken3).finishNFTAuction(itemId);
+
+    let items = await market.fetchForAuction();
+    items = await Promise.all(items.map(async i => {
+      const tokenUri = await nftcontract.tokenURI(i.tokenId);
+      let item = {
+        tokenId : i.tokenId.toString(),
+        seller: i.seller,
+        owner : i.owner,
+        startingPrice: i.startingPrice.toString(),
+        highestBid: i.highestBid.toString(),
+        deadline: i.deadline.toString(),
+        isForAuction: i.isForAuction,
+        tokenUri
+      }
+      return item;
+    }));
+    expect(items[0].isForAuction).to.be.false;
+
   });
 });
