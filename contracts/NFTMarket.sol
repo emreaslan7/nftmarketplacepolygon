@@ -45,7 +45,7 @@ contract NFTMarketplace is ReentrancyGuard{
         bool isForAuction;
     }
 
-    mapping (uint256 => MarketItem) idToMarketItem;
+    mapping (uint256 => MarketItem) public idToMarketItem;
     mapping(uint => ItemForAuction) public idToItemForAuction;
 
     event MarketItemCreated(
@@ -77,19 +77,14 @@ contract NFTMarketplace is ReentrancyGuard{
     function createMarketItem(
         address nftContract,
         uint tokenId,
-        uint256 price,
-        uint256 itemIDs
+        uint256 price
     ) public payable nonReentrant{
         require(price >= 0, "price must be at least 1 wei");
         require(msg.value == listingPrice, "You must pay listing price");
 
-        uint256 itemId;
-        if (itemIDs == 0) {
-            _itemIds.increment();
-            itemId = _itemIds.current();
-        }else{
-            itemId = itemIDs;
-        }
+        _itemIds.increment();
+        uint256 itemId = _itemIds.current();
+
         console.log("itemId:", itemId);
 
         idToMarketItem[itemId] = MarketItem(
