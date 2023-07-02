@@ -25,7 +25,7 @@ export default function Home() {
     const MarketContract = new ethers.Contract(nftmarketaddress, NFTMarket.abi, provider);
 
     const data = await MarketContract.fetchMarketItems();
-
+    console.log(data);
     const items = await Promise.all(data.map(async i => {
       console.log("i : ",i.tokenId.toString());
       const tokenUri = await tokenContract.tokenURI(i.tokenId.toString());
