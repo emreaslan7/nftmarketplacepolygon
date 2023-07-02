@@ -26,16 +26,6 @@ export default function Home() {
 
     const data = await MarketContract.fetchMarketItems();
 
-
-    // const tokenNumbers = await tokenContract._tokenIds();
-
-    // const tokenNumber = await Promise.all(tokenNumbers => {
-    //   console.log(tokenNumbers);
-    //   return tokenNumbers;
-    // })
-
-    // console.log(tokenNumbers);
-
     const items = await Promise.all(data.map(async i => {
       console.log("i : ",i.tokenId.toString());
       const tokenUri = await tokenContract.tokenURI(i.tokenId.toString());
@@ -68,8 +58,9 @@ export default function Home() {
     const contract = new ethers.Contract(nftmarketaddress, NFTMarket.abi, signer)
 
     /* user will be prompted to pay the asking proces to complete the transaction */
-    const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')   
-    const transaction = await contract.createMarketSale(nft.tokenId, {
+    const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')
+    console.log("buying Price: ",price);
+    const transaction = await contract.createMarketSale(nftaddress,nft.tokenId, {
       value: price
     })
     await transaction.wait()

@@ -14,6 +14,7 @@ import Market from '@/artifacts/contracts/NFTMarket.sol/NFTMarketplace.json';
 
 export default function CreateItem(){
     const [selectedFile , setSelectedFile] = useState(null);
+    console.log("selected File :",selectedFile)
     const [formInput, updateFormInput] = useState({ price: '', name: '', description: '' })
     const router = useRouter();
 
@@ -185,7 +186,7 @@ export default function CreateItem(){
             />
             {
               selectedFile && (
-                <img className="rounded mt-4" width="350" src={selectedFile} />
+                <img className="rounded mt-4" width="350px" src={URL.createObjectURL(selectedFile)} />
               )
             }
             <button onClick={createItem} className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg">
@@ -195,54 +196,3 @@ export default function CreateItem(){
         </div>
       )
 }
-
-// const JWT = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJlYjgzNzdmMy03OWVjLTRlZmUtODlmOC1kNzk0OWFlYjNiNGMiLCJlbWFpbCI6ImVtcmVhc2xhbjdAaWNsb3VkLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwaW5fcG9saWN5Ijp7InJlZ2lvbnMiOlt7ImlkIjoiRlJBMSIsImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxfSx7ImlkIjoiTllDMSIsImRlc2lyZWRSZXBsaWNhdGlvbkNvdW50IjoxfV0sInZlcnNpb24iOjF9LCJtZmFfZW5hYmxlZCI6ZmFsc2UsInN0YXR1cyI6IkFDVElWRSJ9LCJhdXRoZW50aWNhdGlvblR5cGUiOiJzY29wZWRLZXkiLCJzY29wZWRLZXlLZXkiOiI1ODI5NzhkOTlmZTEyYTc1YjMyNiIsInNjb3BlZEtleVNlY3JldCI6IjA0ZmEyMTQ2ODY5ZGI5ZTVmZDkzOTA3NmNjYjhiNWRkZDUwYjVmMjAwZjg2YzcwYTE4YmViYmFkOTY0M2Q4MjgiLCJpYXQiOjE2ODc5Njk3MzV9.2aiCg7iKkmVZ8SwqlW-dfCR3mPxqdlTpYsTgpCYiJWw`
-
-// const FileUpload = () => {
-
-//   const [selectedFile, setSelectedFile] = useState(null);
-
-//   const changeHandler = (event) => {
-//     setSelectedFile(event.target.files[0]);
-//   };
-
-//   const handleSubmission = async() => {
-
-//     const formData = new FormData();
-    
-//     formData.append('file', selectedFile)
-
-//     const metadata = JSON.stringify({
-//       name: 'File name',
-//     });
-//     formData.append('pinataMetadata', metadata);
-    
-//     const options = JSON.stringify({
-//       cidVersion: 0,
-//     })
-//     formData.append('pinataOptions', options);
-
-//     try{
-//       const res = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
-//         maxBodyLength: "Infinity",
-//         headers: {
-//           'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
-//           Authorization: JWT,
-//         }
-//       });
-//       console.log(res.data);
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
-
-//   return (
-//     <>
-//     <label className="form-label text-white">Choose File</label>
-//     <input type="file" className="text-white" onChange={changeHandler}/>
-//     <button className="text-white" onClick={handleSubmission}>Submit</button>
-//     </>
-//   )
-// }
-
-// export default FileUpload

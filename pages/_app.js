@@ -20,12 +20,12 @@ function MyApp({ Component, pageProps }) {
               Sell NFT
             </p>
           </Link>
-          <Link href="/my-nfts">
+          <Link href="/my-assets">
             <p className="mr-6 text-pink-500">
               My NFTs
             </p>
           </Link>
-          <Link href="/dashboard">
+          <Link href="/creator-dashboard">
             <p className="mr-6 text-pink-500">
               Dashboard
             </p>
