@@ -76,18 +76,79 @@ contract NFTMarketplace is ReentrancyGuard{
         return listingPrice;
     }
 
-    function createMarketItem(
-        address nftContract,
-        uint tokenId,
-        uint256 price
-    ) public payable nonReentrant{
-        require(price >= 0, "price must be at least 1 wei");
-        require(msg.value == listingPrice, "You must pay listing price");
+    // function createMarketItem(
+    //     address nftContract,
+    //     uint tokenId,
+    //     uint256 price
+    // ) public payable nonReentrant{
+    //     require(price >= 0, "price must be at least 1 wei");
+    //     require(msg.value == listingPrice, "You must pay listing price");
 
+    //     _itemIds.increment();
+    //     uint256 itemId = _itemIds.current();
+
+    //     console.log("itemId:", itemId);
+
+    //     idToMarketItem[itemId] = MarketItem(
+    //         itemId,
+    //         nftContract,
+    //         tokenId,
+    //         payable(msg.sender),
+    //         payable(address(0)),
+    //         price,
+    //         true,
+    //         msg.sender
+    //     );
+        
+    //     payable(owner).transfer(listingPrice);
+    //     IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
+
+    //     emit MarketItemCreated(
+    //         itemId,
+    //         nftContract,
+    //         tokenId,
+    //         msg.sender,
+    //         address(0),
+    //         price,
+    //         true,
+    //         msg.sender
+    //     );
+    // }
+
+    function createMarketItem(
+    address nftContract,
+    uint tokenId,
+    uint256 price
+) public payable nonReentrant {
+    require(price >= 0, "price must be at least 1 wei");
+    require(msg.value == listingPrice, "You must pay listing price");
+    require(idToMarketItem[tokenId].isForSale == false, "This is already on the list");
+
+    // Kontrol edilecek var olan market item'ın olup olmadığını tutan değişken
+    bool isExistingMarketItem = false;
+    uint256 existingItemId;
+
+    // Var olan market item'ları kontrol et
+    for (uint256 i = 1; i <= _itemIds.current(); i++) {
+        if (
+            idToMarketItem[i].nftContract == nftContract &&
+            idToMarketItem[i].tokenId == tokenId
+        ) {
+            isExistingMarketItem = true;
+            existingItemId = i;
+            break;
+        }
+    }
+
+    if (isExistingMarketItem) {
+        // Var olan market item'ı güncelle
+        idToMarketItem[existingItemId].price = price;
+        idToMarketItem[existingItemId].seller = payable(msg.sender);
+        idToMarketItem[existingItemId].isForSale = true;
+    } else {
+        // Yeni bir market item oluştur
         _itemIds.increment();
         uint256 itemId = _itemIds.current();
-
-        console.log("itemId:", itemId);
 
         idToMarketItem[itemId] = MarketItem(
             itemId,
@@ -99,9 +160,6 @@ contract NFTMarketplace is ReentrancyGuard{
             true,
             msg.sender
         );
-        
-        payable(owner).transfer(listingPrice);
-        IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
 
         emit MarketItemCreated(
             itemId,
@@ -114,6 +172,11 @@ contract NFTMarketplace is ReentrancyGuard{
             msg.sender
         );
     }
+
+    payable(owner).transfer(listingPrice);
+    IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
+}
+
 
     function deleteMarketSale(
         address nftContract,
@@ -268,14 +331,20 @@ contract NFTMarketplace is ReentrancyGuard{
       uint currentIndex = 0;
 
       for (uint i = 0; i < totalItemCount; i++) {
-        if (idToMarketItem[i + 1].owner == msg.sender && idToMarketItem[i + 1].seller != address(0)) {
+        if (idToMarketItem[i + 1].owner == msg.sender && 
+          idToMarketItem[i + 1].seller != address(0) &&
+          idToMarketItem[i + 1].isForSale == false) {
+            
           itemCount += 1;
         }
       }
 
       MarketItem[] memory items = new MarketItem[](itemCount);
       for (uint i = 0; i < totalItemCount; i++) {
-        if (idToMarketItem[i + 1].owner == msg.sender && idToMarketItem[i + 1].seller != address(0)) {
+        if (idToMarketItem[i + 1].owner == msg.sender && 
+          idToMarketItem[i + 1].seller != address(0) &&
+          idToMarketItem[i + 1].isForSale == false){
+
           uint currentId = idToMarketItem[i + 1].itemId;
           MarketItem storage currentItem = idToMarketItem[currentId];
           items[currentIndex] = currentItem;
