@@ -119,11 +119,19 @@ export default function CreatorDashboard(){
     const provider = new ethers.providers.Web3Provider(connection)
     const signer = provider.getSigner()
     const contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
+    const contractNFT = new ethers.Contract(nftaddress, NFT.abi, signer)
+
+    let ownerThisNFT = await contractNFT.ownerOf(nft.tokenId);
+    console.log("ownerTHisNFT:", ownerThisNFT);
+
+    console.log("typeof nft.tokenId", typeof(nft.tokenId));
 
     let listingPrice = await contract.getListingPrice();
     listingPrice = listingPrice.toString();
 
-    const price = ethers.utils.parseEther(salePrice.toString(), 'ether')
+    console.log("salePrice", salePrice);
+    const price = ethers.utils.parseEther(salePrice, 'ether')
+    console.log("price", price);
     const transaction = await contract.createMarketItem(nftaddress,nft.tokenId,price, { value: listingPrice})
     await transaction.wait();
     loadNfts();

@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.4;
+import "hardhat/console.sol";
 
 
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-import "hardhat/console.sol";
 
 contract NFTMarketplace is ReentrancyGuard{
 
@@ -124,27 +124,16 @@ contract NFTMarketplace is ReentrancyGuard{
     require(msg.value == listingPrice, "You must pay listing price");
     require(idToMarketItem[tokenId].isForSale == false, "This is already on the list");
 
-    // Kontrol edilecek var olan market item'ın olup olmadığını tutan değişken
-    bool isExistingMarketItem = false;
-    uint256 existingItemId;
 
-    // Var olan market item'ları kontrol et
-    for (uint256 i = 1; i <= _itemIds.current(); i++) {
-        if (
-            idToMarketItem[i].nftContract == nftContract &&
-            idToMarketItem[i].tokenId == tokenId
-        ) {
-            isExistingMarketItem = true;
-            existingItemId = i;
-            break;
-        }
-    }
-
-    if (isExistingMarketItem) {
+    
+    if (idToMarketItem[tokenId].itemId != 0) {
         // Var olan market item'ı güncelle
-        idToMarketItem[existingItemId].price = price;
-        idToMarketItem[existingItemId].seller = payable(msg.sender);
-        idToMarketItem[existingItemId].isForSale = true;
+        console.log("idToMarketItem: %s ",idToMarketItem[tokenId].owner);
+        MarketItem storage marketItem = idToMarketItem[tokenId];
+        marketItem.price = price;
+        marketItem.seller = payable(msg.sender);
+        marketItem.isForSale = true;
+
     } else {
         // Yeni bir market item oluştur
         _itemIds.increment();
@@ -172,9 +161,10 @@ contract NFTMarketplace is ReentrancyGuard{
             msg.sender
         );
     }
-
     payable(owner).transfer(listingPrice);
     IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
+
+
 }
 
 
@@ -205,6 +195,7 @@ contract NFTMarketplace is ReentrancyGuard{
         
         idToMarketItem[itemId].seller.transfer(msg.value);
         IERC721(nftContract).transferFrom(address(this), msg.sender, tokenId);
+
 
         idToMarketItem[itemId].owner = payable(msg.sender);
         idToMarketItem[itemId].isForSale = false;
