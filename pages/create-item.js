@@ -9,8 +9,9 @@ import axios from 'axios'
 
 
 import { nftaddress ,nftmarketaddress } from '@/config';
-import NFT from '@/artifacts/contracts/NFT.sol/NFT.json';
-import Market from '@/artifacts/contracts/NFTMarket.sol/NFTMarketplace.json';
+import NFT from '../artifacts/contracts/NFT.sol/NFT.json';
+import Market from '../artifacts/contracts/NFTMarket.sol/NFTMarketplace.json';
+import Image from 'next/image'
 
 
 export default function CreateItem(){
@@ -205,7 +206,9 @@ export default function CreateItem(){
            
             {
               selectedFile && (
-                <img className="rounded mt-4" width="350px" src={URL.createObjectURL(selectedFile)} />
+                <div>
+                  <Image className="rounded mt-4 w-96" alt='caption' width={'500'} height={'350'} src={URL?.createObjectURL(selectedFile)} ></Image>
+                </div>
               )
             }
             {

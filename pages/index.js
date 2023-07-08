@@ -6,8 +6,9 @@ import { Inter } from 'next/font/google'
 
 import { nftaddress, nftmarketaddress } from '@/config';
 
-import NFT from "@/artifacts/contracts/NFT.sol/NFT.json";
+import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
 import NFTMarket from "../artifacts/contracts/NFTMarket.sol/NFTMarketplace.json";
+import Image from 'next/image';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -80,7 +81,7 @@ export default function Home() {
           {
             nfts.map((nft, i) => (
               <div key={i} className="border shadow rounded-xl overflow-hidden">
-                <img src={nft.image} />
+                <Image alt='caption' height={'350'} width={'500'} src={nft.image} />
                 <div className="p-4">
                   <p style={{ height: '64px' }} className="text-2xl font-semibold">{nft.name}</p>
                   <div style={{ height: '70px', overflow: 'hidden' }}>

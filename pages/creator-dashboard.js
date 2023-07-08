@@ -4,8 +4,9 @@ import axios from 'axios'
 import Web3Modal from 'web3modal'
 
 import { nftaddress ,nftmarketaddress } from '@/config';
-import NFT from '@/artifacts/contracts/NFT.sol/NFT.json';
-import Market from '@/artifacts/contracts/NFTMarket.sol/NFTMarketplace.json';
+import NFT from '../artifacts/contracts/NFT.sol/NFT.json';
+import Market from '../artifacts/contracts/NFTMarket.sol/NFTMarketplace.json';
+import Image from 'next/image';
 
 export default function CreatorDashboard(){
     const [notListedNFTs, setNotListedNFTs] = useState([]);
@@ -146,16 +147,17 @@ export default function CreatorDashboard(){
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
             {
               nfts.map((nft, i) => (
-                <div key={i} className="border shadow rounded-xl overflow-hidden">
-                  <img src={nft.image} className="rounded" />
-                  <div className="p-4 bg-black">
-                    <div className='flex justify-between'>
+                <div key={i} className="border shadow rounded-xl overflow-hidden flex flex-col justify-between">
+                  <Image src={nft.image} alt='caption' height={'350'} width={'500'} className="rounded" ></Image>
+                  <div className="p-4 bg-black ">
+                    <div className='flex justify-between items-center'>
                       <h2 className='text-2xl font-extrabold text-pink-500'>{nft.name}</h2>
-                      <p className="text-2xl text-white">{nft.price} ETH</p>
+                      <p className="text-md text-white">{nft.price} MATIC</p>
                     </div>
-                    <p className='text-md mt-3'>{nft.description}</p>
-                    <button className="mt-4 w-full bg-pink-500 text-white font-bold py-2 px-12 rounded" onClick={() => cancelList(nft)}>Cancel Listing</button>
                   </div>
+                    <p className='text-sm mt-3 p-4'>{nft.description}</p>
+                    <button className="mt-4 w-full bg-pink-500 text-white font-bold py-2 px-12 rounded" onClick={() => cancelList(nft)}>Cancel Listing</button>
+                  
                 </div>
               ))
             }
@@ -170,10 +172,10 @@ export default function CreatorDashboard(){
                   {
                     purchasedNFTs.map((nft,i)=>
                       <div key={i} className="border shadow rounded-xl overflow-hidden">
-                        <img src={nft.image} className="rounded" />
-                        <div className="p-4 bg-black flex justify-between">
+                        <Image src={nft.image} alt='caption' height={'350'} width={'500'} className="rounded" />
+                        <div className="p-4 bg-black flex justify-between items-center">
                           <h2 className='text-2xl font-extrabold text-pink-500'>{nft.name}</h2>
-                          <p className="text-2xl font-bold text-white">{nft.price} ETH</p>
+                          <p className="text-md font-bold text-white">{nft.price} MATIC</p>
                         </div>
                       </div>
                     )
@@ -194,11 +196,11 @@ export default function CreatorDashboard(){
                   {
                     notListedNFTs.map((nft,i)=>
                       <div key={i} className="border shadow rounded-xl overflow-hidden">
-                        <img src={nft.image} className="rounded" />
+                        <Image src={nft.image} alt='caption' height={'350'} width={'500'} className="rounded" />
                         <div className="p-4 bg-black">
                           <div className=''>
                             <h2 className='text-2xl font-extrabold text-pink-500'>{nft.name}</h2>
-                            <p className="text-md text-white mt-2">{nft.description}</p>
+                            <p className="text-sm text-white mt-2">{nft.description}</p>
                           </div>
 
                           <div>
