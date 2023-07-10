@@ -57,40 +57,12 @@ function MyApp({ Component, pageProps }) {
     <>
     <WagmiConfig config={wagmiConfig}>
     <div>
-      {/* <nav className="border-b p-6 flex items-center justify-between">
-        <Link href='/'>
-          <p className="text-4xl font-bold">Metaverse Marketplace</p>
-        </Link>
-        
-        <div className="flex items-center">
-          {/* <Link href="/">
-            <p className="mr-4 text-pink-500">
-              Home
-            </p>
-          </Link>
-          <Link href="/create-item">
-            <p className="mr-6 text-pink-500 hover:underline">
-              Create NFT and List
-            </p>
-          </Link>
-          <Link href="/my-assets">
-            <p className="mr-6 text-pink-500 hover:underline">
-              Creator Dashboard
-            </p>
-          </Link>
-          <Link href="/creator-dashboard">
-            <p className="mr-6 text-pink-500 hover:underline">
-              Profile
-            </p>
-          </Link>
-          <Web3Button icon='hide' className='mb-3'/>
-        </div>
-      </nav> */}
+    
 
 <div className="relative">
       <div className="border-b p-6 flex items-center justify-between fixed bg-black w-full">
         <Link href='/'>
-          {/* <p className="text-4xl font-bold">Metaverse Marketplace</p> */}
+          
           <Image src={'/logo_white.png'} width={'300'} height={'90'} alt='logo'/>
         </Link>
 
@@ -99,10 +71,10 @@ function MyApp({ Component, pageProps }) {
             className="mr-4 text-pink-500 focus:outline-none lg:hidden"
             onClick={toggleMenu}
           >
-  <div class="space-y-2">
-    <div class="w-8 h-1 bg-gray-600 rounded"></div>
-    <div class="w-8 h-1 bg-gray-600 rounded"></div>
-    <div class="w-8 h-1 bg-gray-600 rounded"></div>
+  <div className="space-y-2">
+    <div className="w-8 h-1 bg-gray-600 rounded"></div>
+    <div className="w-8 h-1 bg-gray-600 rounded"></div>
+    <div className="w-8 h-1 bg-gray-600 rounded"></div>
 </div>
           </button>
           <div className="items-center hidden lg:flex">
@@ -150,8 +122,8 @@ function MyApp({ Component, pageProps }) {
           <div className='mb-20'>
             <button className=" text-pink-500 focus:outline-none lg:hidden"
             onClick={toggleMenu}>
-              <svg class="h-10 w-10 text-pink-500"  viewBox="0 0 24 24"  fill="none"  
-              stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">
+              <svg className="h-10 w-10 text-pink-500"  viewBox="0 0 24 24"  fill="none"  
+              stroke="currentColor"  >
               <line x1="18" y1="6" x2="6" y2="18" />  <line x1="6" y1="6" x2="18" y2="18" /></svg>
             </button>
           </div>
