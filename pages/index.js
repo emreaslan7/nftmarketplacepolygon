@@ -23,7 +23,8 @@ export default function Home() {
   },[]);
 
   async function loadNFTs() {
-    const provider = new ethers.providers.JsonRpcProvider(`https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_KEY}`);
+    // const provider = new ethers.providers.JsonRpcProvider(`https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_KEY}`);
+    const provider = new ethers.providers.JsonRpcProvider('https://matic-mumbai.chainstacklabs.com');
     const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider);
     const MarketContract = new ethers.Contract(nftmarketaddress, NFTMarket.abi, provider);
 
@@ -62,7 +63,6 @@ export default function Home() {
 
     /* user will be prompted to pay the asking proces to complete the transaction */
     const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')
-    console.log("buying Price: ",price);
     const transaction = await contract.createMarketSale(nftaddress,nft.tokenId, {
       value: price
     })

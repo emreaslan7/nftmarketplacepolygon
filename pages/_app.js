@@ -12,7 +12,7 @@ import { Web3Button } from '@web3modal/react'
 import Image from 'next/image';
 
 
-const projectId =process.env.NEXT_PUBLIC_PROJECT_ID;
+const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 const chains = [polygonMumbai, localhost];
 
 const { publicClient } = configureChains(chains, [w3mProvider({projectId})])
