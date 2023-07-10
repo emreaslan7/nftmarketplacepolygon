@@ -141,9 +141,9 @@ export default function CreatorDashboard(){
     console.log("notlistednft",notListedNFTs)
     // if (loadingState === 'loaded' && !nfts.length) return (<h1 className="py-10 px-20 text-3xl">No NFTs listed</h1>)
     return (
-      <div className='pb-20'>
-        <div className="p-4">
-          <h2 className="text-2xl py-2 underline">Listed Items</h2>
+      <div className='pb-20 '>
+        <div className="p-4 ">
+          <h2 className="text-2xl py-2 underline mt-32">Listed Items</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
             {
               nfts.map((nft, i) => (

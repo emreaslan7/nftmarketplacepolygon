@@ -9,6 +9,8 @@ import { nftaddress, nftmarketaddress } from '@/config';
 import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
 import NFTMarket from "../artifacts/contracts/NFTMarket.sol/NFTMarketplace.json";
 import Image from 'next/image';
+require('dotenv').config();
+
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,8 +22,9 @@ export default function Home() {
     loadNFTs();
   },[]);
 
+  console.log(process.env.NEXT_PUBLIC)
   async function loadNFTs() {
-    const provider = new ethers.providers.JsonRpcProvider(`https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_KEY}`);
+    const provider = new ethers.providers.JsonRpcProvider(`https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_PROJECT_ID}`);
     const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider);
     const MarketContract = new ethers.Contract(nftmarketaddress, NFTMarket.abi, provider);
 
@@ -76,7 +79,7 @@ export default function Home() {
 
   return (
     <div className="flex justify-center">
-      <div className="px-4" style={{ maxWidth: '1600px' }}>
+      <div className="px-4 mt-32" style={{ maxWidth: '1600px' }}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
           {
             nfts.map((nft, i) => (

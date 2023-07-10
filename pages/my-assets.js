@@ -55,7 +55,7 @@ export default function MyAssets(){
 
     return (
         <div className='flex justify-center'>
-            <div className='p-4'>
+            <div className='p-4 mt-32'>
                 <h1 className='text-center text-4xl mt-2 font-extralight'>Created for Art, with Love, from You 💕</h1>
                 <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4'>
                 {
