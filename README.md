@@ -1,38 +1,47 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# METAVERSE MARKETPLACE
 
-## Getting Started
+![resim](/public/logo_white.png)
 
-First, run the development server:
+I have developed an innovative project called MetaverseMarketplace, which allows artists and photographers to showcase and sell their artwork on the Polygon network. Additionally, art enthusiasts can explore collections and purchase desired pieces. 
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+By writing smart contracts using Solidity and Hardhat, I aimed to enhance my skills in smart contract development, while also refining my expertise in Next.js and Tailwind CSS for creating a seamless user experience. 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This project signifies my dedication to advancing my proficiency in smart contract development and web development technologies.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+<br>
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+## Demo
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+[Metaverse_Marketplace.app](https://nftmarketplacepolygon.vercel.app/)
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+<br>
 
-## Learn More
+| Desktop | Mobile |
+| --- | --- |
+| ![Desktop Görünümü](/public/assets/desktop-1.png) ![Desktop Görünümü](/public/assets/desktop-2.png)| ![Mobil Görünümü](/public/assets/mobile-2.png) ![Mobil Görünümü](/public/assets/mobile-1.png) |
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+<br>
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Tech Stack
+<div style="align:center"> 
+<a target="_blank"><img style="margin: 20px" src="https://upload.wikimedia.org/wikipedia/commons/9/98/Solidity_logo.svg" alt="tailwindcss" height="40" /></a>
+<a target="_blank"><img style="margin: 20px" src="https://camo.githubusercontent.com/bdec685692def8605d4a9f48ab00bd3193d1eda0fe4d7fa728fedda8b9502f1a/68747470733a2f2f7365656b6c6f676f2e636f6d2f696d616765732f482f686172646861742d6c6f676f2d383838373339454242342d7365656b6c6f676f2e636f6d2e706e67" alt="tailwindcss" height="40" /></a> 
+<a target="_blank"><img style="margin: 20px" src="https://seeklogo.com/images/E/ethers-logo-D5B86204D8-seeklogo.com.png" alt="React" height="40" /></a>
+<a target="_blank"><img style="margin: 20px" width="80" src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Nextjs-logo.svg" alt="Solidity" height="40" /></a>
+<a target="_blank"><img style="margin: 20px" src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" alt="tailwindcss" height="40" /></a>
+<a target="_blank"><img style="margin: 20px" src="https://camo.githubusercontent.com/2b330a9bf2eed1e86d1cd4d470c5b3d80c278bee07ab1ec49632b325ad487e8f/68747470733a2f2f7777772e736f6c6f6465762e636f6d2f66696c652f33643565313239362d653639622d313165632d623961642d3065616566333735396635662f4f70656e5a657070656c696e2d4c6f676f2d49636f6e2e706e67" alt="tailwindcss" height="40" /></a>  
 
-## Deploy on Vercel
+</div>
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+<br>
+<br>
+
+## Feedback
+
+You can share your feedback about the project with me. If you encounter any issues, please feel free to email me at:
+
+- Email: emreaslan.eth@gmail.com
+
+Thank you!
